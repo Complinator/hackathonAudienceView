@@ -1,7 +1,7 @@
 import React from 'react';
 import { Paper, Typography, FormGroup, FormControlLabel, Checkbox, Select, MenuItem } from '@mui/material';
 
-function ProductFilters() {
+export default function ProductFilters() {
   return (
     <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -28,5 +28,3 @@ function ProductFilters() {
     </Paper>
   );
 }
-
-export default ProductFilters;
