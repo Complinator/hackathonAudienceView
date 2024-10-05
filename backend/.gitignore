@@ -1,0 +1,5 @@
+# From pipenv
+__pycache__
+Pipfile
+Pipfile.lock
+.env.local
