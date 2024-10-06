@@ -2,17 +2,14 @@ from openai import OpenAI
 import time
 
 class chatAI:
-    def __init__(self, api_key : str):
+    def __init__(self, api_key : str, id : str):
         self.client = OpenAI(api_key=api_key)
         self.prompt = ""
+        self.loadAssisant(id)
 
-    def generatePrompt(self, items : dict):
+    def generatePrompt(self):
         self.prompt += f'''
-            Eres el chatbot de una empresa y tu fin principal es la atención al cliente dentro de una página web, la idea es que respondas preguntas al usuario de una manera breve, fácil de entender y, 
-            por sobre todo, muy explicita a modo de facilitar el viaje del usuario dentro de la página y mejorar el entendimiento de este sobre la empresa. A continuación habrán unos apartados que guiarán
-            como será tu interacción con el usuario:
-            # CONTEXTO #
-            Trabajarás sobre la empresa {items["Nombre"]}, a continuación, un breve contexto de la empresa: {items["Contexto"]}\n
+            
         '''
         
     def createAssistant(self, name : str):
@@ -30,15 +27,6 @@ class chatAI:
     def loadAssisant(self, id : str):
         self.assistant = self.client.beta.assistants.retrieve(
             assistant_id=id,
-        )
-        return self.assistant.id
-    
-    def modifyAssistant(self):
-        pass
-
-    def removeAssistant(self):
-        self.client.beta.assistants.delete(
-            assistant_id=self.assistant.id,
         )
     
     def createThread(self):
