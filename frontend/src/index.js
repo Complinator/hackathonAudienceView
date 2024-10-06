@@ -6,14 +6,16 @@ import reportWebVitals from './reportWebVitals';
 import app from './firebase/configuration';
 
 import { SessionProvider } from './context/SessionContext';
-
+import { BrowserRouter} from "react-router-dom";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <SessionProvider>
-      <App />
-    </SessionProvider>
+    <BrowserRouter>
+      <SessionProvider>
+        <App />
+      </SessionProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

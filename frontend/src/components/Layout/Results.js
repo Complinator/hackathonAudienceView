@@ -1,7 +1,7 @@
 import React from 'react';
 import { Paper, Typography, List, ListItem, ListItemText } from '@mui/material';
 
-function Results({ results }) {
+export default function Results({ results }) {
   return (
     <Paper elevation={3} sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -17,5 +17,3 @@ function Results({ results }) {
     </Paper>
   );
 }
-
-export default Results;

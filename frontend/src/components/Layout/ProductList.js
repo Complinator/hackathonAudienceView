@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid2, Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
 
-function ProductList({ skinProblems, onProductSelect }) {
+export default function ProductList({ skinProblems, onProductSelect }) {
   // Aquí deberías obtener los productos recomendados basados en los problemas de piel
   const mockProducts = [
     { id: 1, name: 'Limpiador Facial', description: 'Para piel grasa', image: 'url-to-image' },
@@ -35,5 +35,3 @@ function ProductList({ skinProblems, onProductSelect }) {
     </Grid2>
   );
 }
-
-export default ProductList;
