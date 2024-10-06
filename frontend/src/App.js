@@ -39,6 +39,11 @@ export default function App() {
           <Route path="/Chatbot" element={<Chatbot />} />
         </Routes>
       </ThemeProvider>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/analysis" element={<SkinAnalysis />} />
+      </Routes>
     </>
   )
 }

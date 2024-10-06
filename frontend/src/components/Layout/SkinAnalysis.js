@@ -1,8 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { Card, CardContent, Button, Typography, CircularProgress } from '@mui/material';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { SessionContext } from '../../context/SessionContext';
+
 import { Camera } from 'lucide-react';
 
 export default function SkinAnalysis({ onAnalysisComplete }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const sessionId = useContext(SessionContext);
+
+  
+
+  const handleAnalysis = async () => {
+    if (!selectedImage) {
+      alert('Please select an image first.');
+      return;
+    }
+
+    setIsAnalyzing(true);
+
+    const storage = getStorage();
+    const storageRef = ref(storage, `images/${sessionId}/${selectedImage.name}`);
+
+    try {
+      // Upload the image to Firebase Storage
+      await uploadBytes(storageRef, selectedImage);
+      const imageUrl = await getDownloadURL(storageRef);
+      console.log('Image uploaded:', imageUrl);
+      // Simulate analysis with a timeout
+      const mockResults = {
+        dañosSolares: 'moderado',
+        rosacea: 'leve',
+        espinillas: 'severo',
+        tipoPiel: 'grasa',
+        imageUrl: imageUrl // Include the image URL in the results
+      };
+      setIsAnalyzing(false);
+
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setIsAnalyzing(false);
+    }
+  }
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -23,24 +62,7 @@ export default function SkinAnalysis({ onAnalysisComplete }) {
     handleCloseDialog();
   };
 
-  const handleAnalysis = async () => {
-    if (!selectedImage) {
-      alert("Please select an image first.");
-      return;
-    }
-    setIsAnalyzing(true);
-    // Simulate analysis
-    setTimeout(() => {
-      const mockResults = {
-        sunDamage: 'moderate',
-        rosacea: 'mild',
-        acne: 'severe',
-        skinType: 'oily'
-      };
-      onAnalysisComplete(mockResults);
-      setIsAnalyzing(false);
-    }, 3000);
-  };
+  
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -48,20 +70,22 @@ export default function SkinAnalysis({ onAnalysisComplete }) {
       <p className="text-gray-600 mb-4">Upload a photo of your face for analysis</p>
       
       <div className="space-x-4 mb-4">
-        <button 
+        <Button
           onClick={handleOpenDialog} 
           disabled={isAnalyzing}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
         >
-          Select Image
-        </button>
-        <button 
-          onClick={handleAnalysis} 
-          disabled={isAnalyzing || !selectedImage}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+          Subir Imagen
+          <input type="file" hidden accept="image/*" />
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleAnalysis}
+          disabled={isAnalyzing}
+          sx={{ ml: 2 }}
         >
           Analyze
-        </button>
+        </Button>
       </div>
       
       {isAnalyzing && (
