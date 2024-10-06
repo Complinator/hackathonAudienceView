@@ -2,14 +2,27 @@ import React, { useState, useContext } from 'react';
 import { Card, CardContent, Button, Typography, CircularProgress } from '@mui/material';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { SessionContext } from '../../context/SessionContext';
+import app from '../../firebase/configuration';
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 import { Camera } from 'lucide-react';
+const functions = getFunctions(app);
+
 
 export default function SkinAnalysis({ onAnalysisComplete }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const sessionId = useContext(SessionContext);
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const sendImageToAnalysis = async (imageRef) => {
+    const analyzeImage = httpsCallable(functions, 'sendImageToAnalize');
+    try {
+      const result = await analyzeImage({ ref: imageRef });
+      console.log(result);
+    } catch (error) {
+      console.error('Error calling function:', error);
+    }
+  };
 
-  
 
   const handleAnalysis = async () => {
     if (!selectedImage) {
@@ -20,21 +33,21 @@ export default function SkinAnalysis({ onAnalysisComplete }) {
     setIsAnalyzing(true);
 
     const storage = getStorage();
-    const storageRef = ref(storage, `images/${sessionId}/${selectedImage.name}`);
+    const storageRef = ref(storage, `images/${sessionId}`);
 
     try {
       // Upload the image to Firebase Storage
       await uploadBytes(storageRef, selectedImage);
-      const imageUrl = await getDownloadURL(storageRef);
-      console.log('Image uploaded:', imageUrl);
+      console.log('Image uploaded:', storageRef.fullPath);
       // Simulate analysis with a timeout
-      const mockResults = {
-        dañosSolares: 'moderado',
-        rosacea: 'leve',
-        espinillas: 'severo',
-        tipoPiel: 'grasa',
-        imageUrl: imageUrl // Include the image URL in the results
-      };
+      try {
+        const analysisResponse = await sendImageToAnalysis(storageRef.fullPath);
+        setAnalysisResult(analysisResponse);
+        //console.log(analysisResult);
+      }
+      catch (error) {
+        console.error('Error calling function:', error);
+      }
       setIsAnalyzing(false);
 
     } catch (error) {

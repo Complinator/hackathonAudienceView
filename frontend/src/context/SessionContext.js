@@ -12,7 +12,6 @@ const callOnRequestExample = async () => {
     const onRequestExample = httpsCallable(functions, 'on_request_example');
     try {
       
-      console.log("check")
       const result = await onRequestExample();
       console.log(result.data); // "Hello world!"
     } catch (error) {
@@ -28,7 +27,7 @@ export const SessionProvider = ({ children }) => {
     const newSessionId = uuidv4();
     setSessionId(newSessionId);
 
-    callOnRequestExample();
+    //callOnRequestExample();
   }, []);
 
 
