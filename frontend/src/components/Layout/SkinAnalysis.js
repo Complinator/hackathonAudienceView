@@ -28,17 +28,15 @@ export default function SkinAnalysis({ onAnalysisComplete }) {
       const imageUrl = await getDownloadURL(storageRef);
       console.log('Image uploaded:', imageUrl);
       // Simulate analysis with a timeout
-      setTimeout(() => {
-        const mockResults = {
-          dañosSolares: 'moderado',
-          rosacea: 'leve',
-          espinillas: 'severo',
-          tipoPiel: 'grasa',
-          imageUrl: imageUrl // Include the image URL in the results
-        };
-        onAnalysisComplete(mockResults);
-        setIsAnalyzing(false);
-      }, 3000);
+      const mockResults = {
+        dañosSolares: 'moderado',
+        rosacea: 'leve',
+        espinillas: 'severo',
+        tipoPiel: 'grasa',
+        imageUrl: imageUrl // Include the image URL in the results
+      };
+      setIsAnalyzing(false);
+
     } catch (error) {
       console.error('Error uploading image:', error);
       setIsAnalyzing(false);
@@ -78,7 +76,7 @@ export default function SkinAnalysis({ onAnalysisComplete }) {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
         >
           Subir Imagen
-          <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+          <input type="file" hidden accept="image/*" />
         </Button>
         <Button
           variant="contained"
