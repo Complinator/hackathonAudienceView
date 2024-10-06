@@ -35,15 +35,11 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <Navbar />
         <Routes>
-          <Route path="/Home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/Chatbot" element={<Chatbot />} />
+          <Route path="/analysis" element={<SkinAnalysis />} />
         </Routes>
       </ThemeProvider>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/analysis" element={<SkinAnalysis />} />
-      </Routes>
     </>
   )
 }
