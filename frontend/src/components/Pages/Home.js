@@ -4,7 +4,9 @@ import {
   Button, 
   Typography, 
   Container, 
-  Box 
+  Box,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { styled, keyframes } from '@mui/system';
 
@@ -22,7 +24,7 @@ const pulse = keyframes`
   100% { transform: scale(1); opacity: 0.5; }
 `;
 
-const BackgroundAnimation = styled(Box)({
+const BackgroundAnimation = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   left: 0,
@@ -74,9 +76,14 @@ const BackgroundAnimation = styled(Box)({
     backgroundColor: '#F7D9C4',
     animation: `${float} 10s infinite ease-in-out, ${pulse} 5s infinite ease-in-out`,
   },
-});
+  [theme.breakpoints.down('sm')]: {
+    '& > div': {
+      transform: 'scale(0.7)',
+    },
+  },
+}));
 
-const ContentWrapper = styled(Box)({
+const ContentWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
   zIndex: 1,
   minHeight: '100vh',
@@ -85,20 +92,28 @@ const ContentWrapper = styled(Box)({
   justifyContent: 'center',
   alignItems: 'center',
   textAlign: 'center',
-});
+  padding: theme.spacing(3),
+}));
 
-const StyledButton = styled(Button)({
-  marginTop: '2rem',
-  padding: '0.75rem 2rem',
+const StyledButton = styled(Button)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+  padding: theme.spacing(1.5, 4),
   fontSize: '1.2rem',
   transition: 'all 0.3s ease-in-out',
   '&:hover': {
     transform: 'scale(1.05)',
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
   },
-});
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1rem',
+    padding: theme.spacing(1, 3),
+  },
+}));
 
 export default function Home() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Box position="relative" bgcolor="white" overflow="hidden">
       <BackgroundAnimation>
@@ -111,22 +126,36 @@ export default function Home() {
       <Container maxWidth="md">
         <ContentWrapper>
           <Typography 
-            variant="h2" 
+            variant={isMobile ? "h3" : "h2"} 
             component="h1" 
             gutterBottom 
             color="primary"
             sx={{ 
               fontWeight: 'bold',
-              textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+              textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+              fontSize: {
+                xs: '2rem',
+                sm: '2.5rem',
+                md: '3rem',
+              },
             }}
           >
             Dermatological Analysis in DermIA
           </Typography>
           <Typography 
-            variant="h5" 
+            variant={isMobile ? "body1" : "h5"} 
             paragraph 
             color="text.secondary"
-            sx={{ maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}
+            sx={{ 
+              maxWidth: '600px', 
+              margin: '0 auto', 
+              lineHeight: 1.6,
+              fontSize: {
+                xs: '1rem',
+                sm: '1.1rem',
+                md: '1.25rem',
+              },
+            }}
           >
             Discover the future of skincare with our AI-powered dermatological analysis. 
             Get personalized insights and recommendations for healthier skin.
@@ -136,7 +165,7 @@ export default function Home() {
             to="/Chatbot"
             variant="contained"
             color="primary"
-            size="large"
+            size={isMobile ? "medium" : "large"}
           >
             Start Your Skin Journey
           </StyledButton>
