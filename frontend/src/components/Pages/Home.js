@@ -99,7 +99,7 @@ export default function Home() {
           </Typography>
           <Button
             component={Link}
-            to="/analysis"
+            to="/Chatbot"
             variant="contained"
             color="primary"
             size="large"
