@@ -68,3 +68,61 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# Initializing and Deploying firebase
+## Download and init firebase
+First of all, install the firebase tools by running
+```console
+$ npm install -g firebase-tools
+```
+
+That should download firebase as a global script, allowing you to run firebase commands. If you are encountering the error `cannot be loaded because running scripts is disabled on this system`, then, reopen the window as an administrator and run
+```console
+$ Set-ExecutionPolicy RemoteSigned
+```
+
+With that, you are changing the powershell security policy value in order to let you perform such scripts. Else you can run 
+```console
+$ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+to change the current value of the policy just for the actual user.
+With that, the command `firebase --version` should throw the actual version installed.
+Then you have to login into firebase by doing (It should open you a window where you have to login to your firebase account)
+```console
+$ firebase login
+...
+? Allow Firebase to collect CLI and Emulator Suite usage and error reporting information? Yes
++  Success! Logged in as <MailAcc>
+```
+
+## Set up firebase an venv for deployment
+Firstly, is important to init the firebase functions running
+```console
+$ firebase init functions
+...
+? Are you ready to proceed? Yes
+? Would you like to initialize a new codebase, or overwrite an existing one? Overwrite
+? What language would you like to use to write Cloud Functions? Python
+? File functions/requirements.txt already exists. Overwrite? No
+? File functions/.gitignore already exists. Overwrite? No
+? File functions/main.py already exists. Overwrite? No
+? Do you want to install dependencies now? Yes
+```
+That would probably throw `ERROR: To modify pip, please run the following command...`
+So we have to set up the venv for this `functions` instance. For that, firstly we move to the functions folder inside frontend by doing `cd .\frontend\functions\`, and we init the venv by doing:
+```console
+$ .\venv\Scripts\Activate.ps1
+(venv) $ pip install -r requirements.txt
+...
+$ pip show firebase-functions
+```
+If there was no error, then you can proceed by deploying the app using 
+```console
+$ firebase deploy --only functions
+...
+? Would you like to proceed with deletion? Selecting no will continue the rest of the deployments. No
++  Deploy complete!
+```
+
+Then you can freely use the app and check every change on the firebase webapp

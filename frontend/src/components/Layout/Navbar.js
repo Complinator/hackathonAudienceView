@@ -18,23 +18,11 @@ import InputBase from '@mui/material/InputBase';
 import { useNavigate } from 'react-router-dom';
 
 const pages = [
-    {
-      name: 'About',
-      link: '/About'
-    },
-    { 
-      name: 'Products',
-      link: '/Productos'  
-    },
-    {
-      name: 'Login', 
-      link: '/Login'
-    },
-    {
-      name: 'Home',
-      link: '/Home'
-    }
-  ];
+  { name: 'Home', link: '/' },
+  { name: 'About', link: '/About' },
+  { name: 'Products', link: '/Productos' },
+  { name: 'Login', link: '/Login' }
+];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Search = styled('div')(({ theme }) => ({
@@ -67,7 +55,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
@@ -79,58 +66,66 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const AnimatedLogo = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+  transition: 'transform 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.05)',
+  },
+}));
+
 export default function Navbar() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
+  const handlePageClick = (page) => {
+    navigate(page.link);
+    handleCloseNavMenu();
+  };
 
-    const navigate = useNavigate();
-
-    const handlePageClick = (page) => {
-      navigate(page.link);
-    }
-  
-    const handleLogoClick = () => {
-      navigate('/');
-    }
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-          </Typography>
+          <AnimatedLogo onClick={handleLogoClick} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <AdbIcon sx={{ mr: 1 }} />
+            <Typography
+              variant="h6"
+              noWrap
+              sx={{
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              DermIA
+            </Typography>
+          </AnimatedLogo>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -144,114 +139,59 @@ export default function Navbar() {
               <MenuIcon />
             </IconButton>
             <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{ display: { xs: 'block', md: 'none' } }}
-                >
-                {pages.map((page) => (
-                    <MenuItem key={page.name} onClick={() => handlePageClick(page)}>
-                    <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
-                    </MenuItem>
-                ))}
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{ display: { xs: 'block', md: 'none' } }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page.name} onClick={() => handlePageClick(page)}>
+                  <Typography textAlign="center">{page.name}</Typography>
+                </MenuItem>
+              ))}
             </Menu>
           </Box>
 
-          <AdbIcon sx={{display: {xs: 'flex', md: 'none'}}} onClick={handleLogoClick}/>
-
-            <Typography variant="h5" onClick={handleLogoClick}>
-                DermIA
-            </Typography>
-
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map(page => (
-                <Button 
-                    key={page.name}
-                    onClick={() => handlePageClick(page)}
-                >
-                    {page.name}
-                </Button>
-                ))}
-            </Box>
+          <AnimatedLogo onClick={handleLogoClick} sx={{ display: { xs: 'flex', md: 'none' }, flexGrow: 1, alignItems: 'center' }}>
+            <AdbIcon sx={{ mr: 1 }} />
             <Typography
-                variant="h5"
-                noWrap
-                component="a"
-                href="#app-bar-with-responsive-menu"
-                sx={{
-                mr: 2,
-                display: { xs: 'flex', md: 'none' },
-                flexGrow: 1,
+              variant="h5"
+              noWrap
+              sx={{
                 fontFamily: 'monospace',
                 fontWeight: 700,
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
-                }}
-            >
-                Choripan
-            </Typography>
-            <Box 
-              sx={{
-                flexGrow: 1,
-                display: { xs: 'none', md: 'flex' },
-                justifyContent: 'center'
               }}
             >
+              DermIA
+            </Typography>
+          </AnimatedLogo>
 
-              {pages.map(page => (
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+            {pages.map((page) => (
+              <Button
+                key={page.name}
+                onClick={() => handlePageClick(page)}
+                sx={{ my: 2, color: 'white', display: 'block', mx: 1 }}
+              >
+                {page.name}
+              </Button>
+            ))}
+          </Box>
 
-                <Button
-                  sx={{
-                    my: 2, 
-                    mx: 1
-                  }}
-                >
-                  {page.name}
-                </Button>
-
-              ))}
-
-            </Box>
-            <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-                </Tooltip>
-                <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-                >
-                {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                    </MenuItem>
-                ))}
-                </Menu>
-            </Box>
+          <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -261,6 +201,35 @@ export default function Navbar() {
                 inputProps={{ 'aria-label': 'search' }}
               />
             </Search>
+
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
         </Toolbar>
       </Container>
     </AppBar>

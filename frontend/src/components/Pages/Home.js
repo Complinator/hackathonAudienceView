@@ -39,7 +39,7 @@ const BackgroundAnimation = styled(Box)({
     left: '10%',
     width: '80px',
     height: '80px',
-    backgroundColor: '#E6F7FF',
+    backgroundColor: '#C6DEF1',
     animation: `${float} 12s infinite ease-in-out, ${pulse} 6s infinite ease-in-out`,
   },
   '& > div:nth-of-type(2)': {
@@ -47,7 +47,7 @@ const BackgroundAnimation = styled(Box)({
     right: '15%',
     width: '120px',
     height: '120px',
-    backgroundColor: '#FFF0F6',
+    backgroundColor: '#C9E4DE',
     animation: `${float} 15s infinite ease-in-out, ${pulse} 8s infinite ease-in-out`,
   },
   '& > div:nth-of-type(3)': {
@@ -63,8 +63,16 @@ const BackgroundAnimation = styled(Box)({
     left: '10%',
     width: '70px',
     height: '70px',
-    backgroundColor: '#E6FFFB',
+    backgroundColor: '#F2C6DE',
     animation: `${float} 14s infinite ease-in-out, ${pulse} 7s infinite ease-in-out`,
+  },
+  '& > div:nth-of-type(5)': {
+    top: '10%',
+    right: '10%',
+    width: '90px',
+    height: '90px',
+    backgroundColor: '#F7D9C4',
+    animation: `${float} 10s infinite ease-in-out, ${pulse} 5s infinite ease-in-out`,
   },
 });
 
@@ -79,6 +87,17 @@ const ContentWrapper = styled(Box)({
   textAlign: 'center',
 });
 
+const StyledButton = styled(Button)({
+  marginTop: '2rem',
+  padding: '0.75rem 2rem',
+  fontSize: '1.2rem',
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.05)',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+  },
+});
+
 export default function Home() {
   return (
     <Box position="relative" bgcolor="white" overflow="hidden">
@@ -87,35 +106,40 @@ export default function Home() {
         <div />
         <div />
         <div />
+        <div />
       </BackgroundAnimation>
       <Container maxWidth="md">
         <ContentWrapper>
-          <Typography variant="h2" component="h1" gutterBottom color="primary">
+          <Typography 
+            variant="h2" 
+            component="h1" 
+            gutterBottom 
+            color="primary"
+            sx={{ 
+              fontWeight: 'bold',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+            }}
+          >
             Dermatological Analysis in DermIA
           </Typography>
-          <Typography variant="h5" paragraph color="text.secondary">
+          <Typography 
+            variant="h5" 
+            paragraph 
+            color="text.secondary"
+            sx={{ maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}
+          >
             Discover the future of skincare with our AI-powered dermatological analysis. 
             Get personalized insights and recommendations for healthier skin.
           </Typography>
-          <Button
+          <StyledButton
             component={Link}
             to="/Chatbot"
             variant="contained"
             color="primary"
             size="large"
-            sx={{ 
-              mt: 4,
-              px: 4,
-              py: 1.5,
-              fontSize: '1.2rem',
-              '&:hover': {
-                transform: 'scale(1.05)',
-                transition: 'transform 0.3s ease-in-out',
-              },
-            }}
           >
             Start Your Skin Journey
-          </Button>
+          </StyledButton>
         </ContentWrapper>
       </Container>
     </Box>

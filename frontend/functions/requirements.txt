@@ -1,1 +1,7 @@
 firebase_functions~=0.1.0
+pandas
+requests
+firebase-admin
+flask
+beautifulsoup4
+openai
