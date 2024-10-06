@@ -104,7 +104,7 @@ export default function Chatbot() {
   return (
     <ChatbotContainer maxWidth="md">
       <Box textAlign="center" mb={3}>
-        <Typography variant="h4" fontWeight="bold" color={pastelBlue}>
+        <Typography variant="h4" fontWeight="bold">
           DermIA Chatbot
         </Typography>
       </Box>
