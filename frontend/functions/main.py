@@ -46,10 +46,48 @@ def sendImageToAnalize(req: https_fn.CallableRequest) -> Any:
             'possibility': prediction['possibility'],
             'icd': prediction['icd']
         })
+
+
+    
+
     #response = requests.post(external_api_url, files=files)
     df = pd.DataFrame(extracted_data)
     # Return the response from the external API
     return (df.to_dict())
+
+@https_fn.on_call()
+def placeholderAnalysis(req: https_fn.CallableRequest) -> Any:
+    placeholderResponse = {
+        "confidence": {
+            "0": 0.29832575476249396,
+            "1": 0.2650293226068412,
+            "2": 0.16543214311466295,
+            "3": 0.15475950634365035,
+            "4": 0.09145327317235143
+        },
+        "icd": {
+            "0": "L70.0",
+            "1": "L70.9",
+            "2": "L71.9",
+            "3": "L70.0",
+            "4": "L71.0"
+        },
+        "name": {
+            "0": "Acne Nodulocystica",
+            "1": "Acne, Unspecified",
+            "2": "Rosacea",
+            "3": "Acne Vulgaris",
+            "4": "Perioral Dermatitis"
+        },
+        "possibility": {
+            "0": "Possible",
+            "1": "Possible",
+            "2": "Possible",
+            "3": "Possible",
+            "4": "Low Possibility"
+        }
+    }
+    return placeholderResponse
 
 
 def scrape_pharmacy_products(base_url, search_keyword):

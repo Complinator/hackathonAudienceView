@@ -14,7 +14,8 @@ export default function SkinAnalysis({ onAnalysisComplete }) {
   const sessionId = useContext(SessionContext);
   const [analysisResult, setAnalysisResult] = useState(null);
   const sendImageToAnalysis = async (imageRef) => {
-    const analyzeImage = httpsCallable(functions, 'sendImageToAnalize');
+    //const analyzeImage = httpsCallable(functions, 'sendImageToAnalize');
+    const analyzeImage = httpsCallable(functions, 'placeholderAnalysis');
     try {
       const result = await analyzeImage({ ref: imageRef });
       console.log(result);
