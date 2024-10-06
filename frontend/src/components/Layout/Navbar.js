@@ -18,7 +18,7 @@ import InputBase from '@mui/material/InputBase';
 import { useNavigate } from 'react-router-dom';
 
 const pages = [
-  { name: 'Home', link: '/Home' },
+  { name: 'Home', link: '/' },
   { name: 'About', link: '/About' },
   { name: 'Products', link: '/Productos' },
   { name: 'Login', link: '/Login' }
