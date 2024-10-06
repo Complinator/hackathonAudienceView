@@ -8,11 +8,11 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import { Camera } from 'lucide-react';
 const functions = getFunctions(app);
 
-
-export default function SkinAnalysis({ onAnalysisComplete }) {
+const SkinAnalysis = ({ onAnalysisComplete }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const sessionId = useContext(SessionContext);
   const [analysisResult, setAnalysisResult] = useState(null);
+  
   const sendImageToAnalysis = async (imageRef) => {
     //const analyzeImage = httpsCallable(functions, 'sendImageToAnalize');
     const analyzeImage = httpsCallable(functions, 'placeholderAnalysis');
@@ -162,3 +162,5 @@ export default function SkinAnalysis({ onAnalysisComplete }) {
     </div>
   );
 }
+
+export default SkinAnalysis;

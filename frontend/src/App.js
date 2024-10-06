@@ -7,7 +7,10 @@ import ProductList from './components/Layout/ProductList';
 import Cart from './components/Layout/Cart';
 import Navbar from './components/Layout/Navbar';
 import Home from './components/Pages/Home';
+import About from './components/Pages/About';
 import Chatbot from './components/Pages/Chatbot';
+import Products from './components/Pages/Products';
+import Login from './components/Pages/Login';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Suspense } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -38,6 +41,9 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/Chatbot" element={<Chatbot />} />
           <Route path="/analysis" element={<SkinAnalysis />} />
+          <Route path="/About" element={<About />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Products" element={<Products />} />
         </Routes>
       </ThemeProvider>
     </>
