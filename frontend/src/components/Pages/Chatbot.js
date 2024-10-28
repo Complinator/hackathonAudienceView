@@ -22,6 +22,28 @@ const ChatbotContainer = styled(Container)(({ theme }) => ({
   backgroundColor: secondaryColor,
 }));
 
+const getResponse = async (req) => {
+  const loadChat = httpsCallable(functions, 'getResponse'); // Updated function name
+  try {
+    const result = await loadChat(req);
+    console.log(result);
+    return result.data;
+  } catch (error) {
+    console.error('Error calling function:', error);
+    throw error;
+  }
+};
+
+function getCookie(a) {
+  var c = document.cookie.split(a + "=")[1];
+  if (c.includes(";")) {
+      return c.split(";")[0];
+  } else {
+      return c;
+  }
+}
+
+
 const ChatArea = styled(Paper)(({ theme }) => ({
   flexGrow: 1,
   overflowY: 'auto',
@@ -119,6 +141,7 @@ export default function Chatbot() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const sessionId = useContext(SessionContext);
+  const [strongTextList, setStrongTextList] = useState([]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -133,6 +156,26 @@ export default function Chatbot() {
     if (file) {
       addImageMessage(file);
     }
+  };
+
+  function Strongify(text) {
+    const regex = /\*\*(.*?)\*\*/g;
+    const parts = text.match(regex);
+    const strongTexts = [];
+  
+    const parsedText = text.split(regex).map((part, index) => {
+      if (parts && parts.includes(`**${part}**`)) {
+          const textInsideStrong = part;
+          strongTexts.push(textInsideStrong);
+
+          return <strong key={index}>{textInsideStrong}</strong>;
+      } else {
+          return part;
+      }
+  });
+  
+    setStrongTextList(strongTexts);
+    return <>{parsedText}</>;
   };
 
   const handleCameraCapture = () => {
@@ -189,15 +232,17 @@ export default function Chatbot() {
       console.log('Image uploaded:', storageRef.fullPath);
 
       setAnalysisStage('processing');
-      const analyzeImage = httpsCallable(functions, 'analyzeSkinCondition');
+      const analyzeImage = httpsCallable(functions, 'sendImageToAnalize');
       const result = await analyzeImage({ ref: storageRef.fullPath });
+      const req = "A continuación se presenta un json: " + result + "Puedes escribir un párrafo con esta información considerando todo lo incluído en el JSON y recomendar una medicina, crema, tratamiento, entre otros para poder tratar de buena manera esta condición. Recuerda usar productos que se encuentren en farmacias chilenas"
+      const gptResult = await getResponse(req);
 
       setAnalysisStage('complete');
       setMessages(prev => [...prev, { type: 'text', content: "Analysis complete. Here are the results:", sender: 'bot' }]);
       
       // Format the analysis results
-      const formattedResult = formatAnalysisResults(result.data);
-      setMessages(prev => [...prev, { type: 'text', content: formattedResult, sender: 'bot' }]);
+      const formattedResult = formatAnalysisResults(gptResult.data);
+      setMessages(prev => [...prev, { type: 'text', content: Strongify(formattedResult), sender: 'bot' }]);
 
       setIsAnalyzing(false);
       setAnalysisStage(null);
@@ -214,19 +259,7 @@ export default function Chatbot() {
     // You'll need to adjust this based on the actual structure of your analysis results
     let formattedResult = "Based on the image analysis:\n\n";
     
-    if (data.conditions) {
-      formattedResult += "Detected conditions:\n";
-      data.conditions.forEach(condition => {
-        formattedResult += `- ${condition.name}: ${(condition.probability * 100).toFixed(2)}%\n`;
-      });
-    }
-    
-    if (data.recommendations) {
-      formattedResult += "\nRecommendations:\n";
-      data.recommendations.forEach(rec => {
-        formattedResult += `- ${rec}\n`;
-      });
-    }
+    formattedResult += data
     
     formattedResult += "\nPlease note that this analysis is not a substitute for professional medical advice. Always consult with a dermatologist for accurate diagnosis and treatment.";
     
@@ -257,16 +290,29 @@ export default function Chatbot() {
     );
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (inputMessage.trim()) {
+      const message = inputMessage
       setMessages(prev => [...prev, { type: 'text', content: inputMessage, sender: 'user' }]);
-      setInputMessage('');
-      // Here you can add logic to process the user's message and generate a response
-      setTimeout(() => {
-        setMessages(prev => [...prev, { type: 'text', content: "Thank you for your message. How else can I assist you?", sender: 'bot' }]);
-      }, 1000);
+      setInputMessage("");
+      
+      const response = await getResponse({message: message, threadid: getCookie("threadid")})
+
+      setMessages(prev => [...prev, { type: 'text', content: Strongify(response), sender: 'bot' }]);
+      console.log(strongTextList)
     }
   };
+
+  useEffect(() => {
+    const loadChat = httpsCallable(functions, 'loadChat');
+    try {
+      const result = loadChat();
+      console.log(result.data);
+      document.cookie =`threadid=${result.data}`;
+    } catch (error) {
+      console.error('Error calling function:', error);
+    }
+  }, [])
 
   return (
     <ChatbotContainer maxWidth="md">

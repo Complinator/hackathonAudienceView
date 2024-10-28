@@ -8,8 +8,20 @@ import tempfile
 from bs4 import BeautifulSoup
 from firebase_functions import https_fn
 from firebase_admin import initialize_app, storage
+from models.openai import chatAI
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 initialize_app()
+
+GPT_KEY = os.getenv('GPT_KEY')
+ASSISTANT_KEY = os.getenv('ASSISTANT_KEY')
+AUTO_DERM_KEY = os.getenv('AUTO_DERM_KEY')
+
+chatai = chatAI(GPT_KEY) # Remember to remove this token
+chatai.loadAssisant(id=ASSISTANT_KEY)
 
 #@https_fn.on_call()
 #def on_request_example(data=None, context=None):
@@ -31,7 +43,7 @@ def sendImageToAnalize(req: https_fn.CallableRequest) -> Any:
     url = 'https://autoderm.ai/v1/query'
     files = {'file': image_data}
     data = {'model': 'autoderm_v2_2', 'language': 'en'}
-    headers = {'Api-Key': 'fae5546e-4885-bc74-03fd-df5d0847d4d5'}
+    headers = {'Api-Key': AUTO_DERM_KEY}
     response = requests.post(url, headers=headers, files=files, data=data)
     answer = response.json()
     extracted_data = []
@@ -102,3 +114,16 @@ def scrape_pharmacy_products(base_url, search_keyword):
         return product_data
     else:
         return f"Error: Unable to fetch data (Status code: {response.status_code})"
+    
+@https_fn.on_call()
+def getResponse(req: https_fn.CallableRequest) -> Any:
+    message = req.data["message"]
+    threadid = req.data["threadid"]
+    
+    chatai.createMessage(message, threadid)
+    response = chatai.retrieveAssistant(chatai.runAssistant(threadid), threadid)
+    return response
+
+@https_fn.on_call()
+def loadChat(req: https_fn.CallableRequest):
+    return chatai.createThread()
